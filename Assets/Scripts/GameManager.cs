@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         base.OnEnable();
         PhotonNetwork.AddCallbackTarget(this);
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public override void OnDisable()
