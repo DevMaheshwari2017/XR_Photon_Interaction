@@ -29,7 +29,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (Input.GetKeyUp(KeyCode.Escape))
         {
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = (Cursor.lockState == CursorLockMode.Locked) ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = (Cursor.lockState == CursorLockMode.None);
         }
 
         if (Input.GetKeyDown(KeyCode.L) && PhotonNetwork.IsMasterClient)

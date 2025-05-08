@@ -9,7 +9,7 @@ public class CameraManager : MonoBehaviour
 
     private void Awake()
     {
-        view = GetComponent<PhotonView>();
+        view = GetComponentInChildren<PhotonView>();
         if (!view.IsMine) 
         {
             Camera cam = GetComponentInChildren<Camera>();
