@@ -2,7 +2,6 @@ using Photon.Pun;
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviourPunCallbacks
@@ -62,13 +61,4 @@ public class UIManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(2f);
         noRoomError.SetActive(false);
     }
-    //public override void OnLeftRoom()
-    //{
-    //    SceneManager.LoadScene(0);
-    //}
-
-    //public void LeaveRoom()
-    //{
-    //    PhotonNetwork.LeaveRoom();
-    //}
 }

@@ -27,7 +27,6 @@ public class CameraManager : MonoBehaviour
                 controller.enabled = false;
             }
 
-            // You can also disable TrackedPoseDrivers
             foreach (var poseDriver in GetComponentsInChildren<TrackedPoseDriver>())
             {
                 if(poseDriver != null)
