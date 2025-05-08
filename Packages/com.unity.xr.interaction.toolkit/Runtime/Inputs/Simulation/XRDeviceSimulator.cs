@@ -17,6 +17,12 @@ using UnityEngine.XR.Interaction.Toolkit.Utilities;
 #if XR_HANDS_1_1_OR_NEWER
 using UnityEngine.XR.Hands;
 using UnityEngine.XR.Hands.ProviderImplementation;
+using Photon.Pun;
+using System.Collections;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+
+
+
 #endif
 
 #if XR_MANAGEMENT_4_0_OR_NEWER
@@ -72,7 +78,8 @@ namespace UnityEngine.XR.Interaction.Toolkit.Inputs.Simulation
 
         static readonly Vector3 s_LeftDeviceDefaultInitialPosition = new Vector3(-0.1f, -0.05f, 0.3f);
         static readonly Vector3 s_RightDeviceDefaultInitialPosition = new Vector3(0.1f, -0.05f, 0.3f);
-
+        private PhotonView view;
+        private bool canActivateController = true;
         /// <summary>
         /// The coordinate space in which to operate.
         /// </summary>
@@ -1667,12 +1674,29 @@ namespace UnityEngine.XR.Interaction.Toolkit.Inputs.Simulation
         Vector3 m_OriginalCameraOffsetObjectPosition;
         float m_OriginalCameraYOffset;
 #endif
+        protected virtual void Start()
+        {
+            StartCoroutine(WaitForPlayerVR());
+        }
 
+        private IEnumerator WaitForPlayerVR()
+        {
+            GameObject obj = null;
+            while (obj == null)
+            {
+                obj = GameObject.FindWithTag("PlayerVR");
+                yield return null; // wait for next frame
+            }
+
+            view = obj.GetComponent<PhotonView>();
+            Debug.Log("Got photon view from playervr");
+        }
         /// <summary>
         /// See <see cref="MonoBehaviour"/>.
         /// </summary>
         protected virtual void Awake()
         {
+            canActivateController = true;
             if (instance == null)
             {
                 instance = this;
@@ -1970,11 +1994,28 @@ namespace UnityEngine.XR.Interaction.Toolkit.Inputs.Simulation
 #endif
         }
 
+        private void ActivateControllers()
+        {
+            var left = GameObject.FindWithTag("LeftController");
+            var right = GameObject.FindWithTag("RightController");
+
+            left.SetActive(true);
+            right.SetActive(true);
+        }
         /// <summary>
         /// See <see cref="MonoBehaviour"/>.
         /// </summary>
         protected virtual void Update()
         {
+            if (view != null && !view.IsMine)
+            {
+                if (canActivateController)
+                {
+                    ActivateControllers();
+                    canActivateController = false;
+                }
+                return;
+            }
             ProcessPoseInput();
             ProcessControlInput();
 

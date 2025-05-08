@@ -1,5 +1,8 @@
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.XR.Interaction.Toolkit.Inputs.Simulation;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.InputSystem.XR;
 public class CameraManager : MonoBehaviour
 {
    private PhotonView view;
@@ -11,27 +14,25 @@ public class CameraManager : MonoBehaviour
         {
             Camera cam = GetComponentInChildren<Camera>();
             cam.enabled = false;
+
+
+            // Disable XRDeviceSimulator or controllers
+            XRDeviceSimulator simulator = GetComponentInChildren<XRDeviceSimulator>();
+            if (simulator != null) simulator.enabled = false;
+
+            // Disable InputAction-based controllers
+            foreach (var controller in GetComponentsInChildren<ActionBasedController>())
+            {
+                if(controller != null)
+                controller.enabled = false;
+            }
+
+            // You can also disable TrackedPoseDrivers
+            foreach (var poseDriver in GetComponentsInChildren<TrackedPoseDriver>())
+            {
+                if(poseDriver != null)
+                poseDriver.enabled = false;
+            }
         }
-    }
-
-    /// <summary>
-    /// As I am using XR interaction toolkit and can't chnage the package script, disabling any input on the other player from here
-    /// Will call this script before any other script in Unity settings, to block all the inputs properly.
-    /// </summary>
-    private void Update()
-    {
-        if (!view.IsMine)
-            return;
-    }
-    private void FixedUpdate()
-    {
-        if (!view.IsMine)
-            return;
-    }
-
-    private void LateUpdate()
-    {
-        if (!view.IsMine)
-            return;
     }
 }

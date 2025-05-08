@@ -26,6 +26,7 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
     [AddComponentMenu("XR/Controller Input Action Manager")]
     public class ControllerInputActionManager : MonoBehaviour
     {
+
         [Space]
         [Header("Interactors")]
 

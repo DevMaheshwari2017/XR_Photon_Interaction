@@ -16,6 +16,7 @@ using UnityEngine.XR.Interaction.Toolkit.Utilities;
 using UnityEngine.XR.Interaction.Toolkit.Utilities.Internal;
 using UnityEngine.XR.Interaction.Toolkit.Utilities.Pooling;
 using Photon.Pun;
+using System.Collections;
 #if AR_FOUNDATION_PRESENT
 using UnityEngine.XR.Interaction.Toolkit.AR;
 #endif
@@ -312,16 +313,22 @@ namespace UnityEngine.XR.Interaction.Toolkit
             m_SelectFilters.RegisterReferences(m_StartingSelectFilters, this);
         }
 
-        private void Start()
+        protected virtual void Start()
         {
-            Debug.Log("awake - xr interactio");
-            GameObject obj = GameObject.FindWithTag("PlayerVR");
-            if (obj != null)
+            StartCoroutine(WaitForPlayerVR());
+        }
+
+        private IEnumerator WaitForPlayerVR()
+        {
+            GameObject obj = null;
+            while (obj == null)
             {
-                view = obj.GetComponent<PhotonView>();
-                Debug.Log("Got photon view from playervr");
+                obj = GameObject.FindWithTag("PlayerVR");
+                yield return null; // wait for next frame
             }
-            else { Debug.Log("couldn't find playervr"); }
+
+            view = obj.GetComponent<PhotonView>();
+            Debug.Log("Got photon view from playervr");
         }
         /// <summary>
         /// See <see cref="MonoBehaviour"/>.
@@ -364,8 +371,8 @@ namespace UnityEngine.XR.Interaction.Toolkit
         // ReSharper disable PossiblyImpureMethodCallOnReadonlyVariable -- ProfilerMarker.Begin with context object does not have Pure attribute
         protected virtual void Update()
         {
-            //if(!view.IsMine)
-            //    return;
+            if (view != null && !view.IsMine)
+                return;
             ClearPriorityForSelectionMap();
             FlushRegistration();
 
@@ -434,8 +441,8 @@ namespace UnityEngine.XR.Interaction.Toolkit
         /// </summary>
         protected virtual void LateUpdate()
         {
-            //if (!view.IsMine)
-            //    return;
+            if (view != null && !view.IsMine)
+                return;
             FlushRegistration();
 
             using (s_ProcessInteractorsMarker.Auto())
@@ -449,8 +456,8 @@ namespace UnityEngine.XR.Interaction.Toolkit
         /// </summary>
         protected virtual void FixedUpdate()
         {
-            //if (!view.IsMine)
-            //    return;
+            if (view != null && !view.IsMine)
+                return;
             FlushRegistration();
 
             using (s_ProcessInteractorsMarker.Auto())
