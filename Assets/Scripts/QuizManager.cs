@@ -19,12 +19,6 @@ public class QuizManager : MonoBehaviour
     [SerializeField] private GameObject optionsParent;
     private int currentQuestionNumber = 0;
 
-    // on awake shows first question
-    // on option button presss checkcorrectanswer - check current question - match answer from SO with option button pressed
-    // if correct - chnage color to grren, if wrong to red
-    // then activate next button
-    // increase question count and repeat again
-
     private void OnEnable()
     {
         nextBtn.onClick.AddListener(NextQuestion);
